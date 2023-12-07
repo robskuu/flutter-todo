@@ -87,7 +87,10 @@ class _TodoScreenState extends State<TodoScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                Navigator.of(context).pop();
+                taskController.clear();
+              },
               child: const Text(
                 "Cancel",
                 style: TextStyle(
