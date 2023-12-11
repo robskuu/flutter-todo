@@ -4,6 +4,7 @@ void main() {
   runApp(const MyApp());
 }
 
+// Task class
 class Task {
   String title;
   bool isCompleted;
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// Main screen
 class TodoScreen extends StatefulWidget {
   const TodoScreen({super.key});
 
@@ -34,7 +36,7 @@ class TodoScreen extends StatefulWidget {
 class _TodoScreenState extends State<TodoScreen> {
   List<Task> tasks = [];
   TextEditingController taskController = TextEditingController();
-
+  // Add task
   void addTask(String title) {
     if (title.isNotEmpty) {
       setState(() {
@@ -45,12 +47,14 @@ class _TodoScreenState extends State<TodoScreen> {
     }
   }
 
+  // Toggle checkbox value
   void toggleTask(int index) {
     setState(() {
       tasks[index].isCompleted = !tasks[index].isCompleted;
     });
   }
 
+  // Delete task
   void deleteTask(int index) {
     setState(() {
       tasks.removeAt(index);
@@ -63,6 +67,7 @@ class _TodoScreenState extends State<TodoScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color.fromRGBO(36, 41, 62, 1),
+          // Dialog box header
           title: const Text(
             "Add Task",
             style: TextStyle(
@@ -71,6 +76,7 @@ class _TodoScreenState extends State<TodoScreen> {
               fontSize: 24.0,
             ),
           ),
+          // Task name user input
           content: TextField(
             style: const TextStyle(
               color: Color.fromRGBO(244, 245, 252, 1),
@@ -91,6 +97,7 @@ class _TodoScreenState extends State<TodoScreen> {
                 Navigator.of(context).pop();
                 taskController.clear();
               },
+              // Dialog cancel button
               child: const Text(
                 "Cancel",
                 style: TextStyle(
@@ -98,6 +105,7 @@ class _TodoScreenState extends State<TodoScreen> {
                 ),
               ),
             ),
+            // Dialog add task button
             TextButton(
               onPressed: () => addTask(taskController.text),
               child: const Text(
@@ -129,6 +137,7 @@ class _TodoScreenState extends State<TodoScreen> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
       ),
+      // Show add task dialog
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(142, 187, 255, 1),
         onPressed: () => showAddTaskDialog(context),
@@ -146,9 +155,11 @@ class _TodoScreenState extends State<TodoScreen> {
           ),
           const SizedBox(height: 10.0),
           Expanded(
+            // Task builder
             child: ListView.builder(
               itemCount: tasks.length,
               itemBuilder: (context, index) {
+                // Task template
                 return Card(
                   color: const Color.fromRGBO(36, 41, 62, 1),
                   surfaceTintColor: const Color.fromRGBO(204, 204, 204, 1),
@@ -156,6 +167,7 @@ class _TodoScreenState extends State<TodoScreen> {
                   margin: const EdgeInsets.symmetric(
                       horizontal: 8.0, vertical: 4.0),
                   child: ListTile(
+                    // Task checkbox
                     leading: Checkbox(
                       side: const BorderSide(
                         color: Color.fromRGBO(244, 245, 252, 1),
@@ -165,6 +177,7 @@ class _TodoScreenState extends State<TodoScreen> {
                       value: tasks[index].isCompleted,
                       onChanged: (value) => toggleTask(index),
                     ),
+                    // Task name
                     title: Text(
                       tasks[index].title,
                       style: TextStyle(
@@ -176,6 +189,7 @@ class _TodoScreenState extends State<TodoScreen> {
                         decorationThickness: 2.0,
                       ),
                     ),
+                    // Delete task button
                     trailing: tasks[index].isCompleted
                         ? IconButton(
                             icon: const Icon(
