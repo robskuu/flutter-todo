@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import "package:localstorage/localstorage.dart";
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 // Task class
@@ -13,7 +14,8 @@ class Task {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final LocalStorage storage = LocalStorage('localstorage_app');
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +167,9 @@ class _TodoScreenState extends State<TodoScreen> {
                   surfaceTintColor: const Color.fromRGBO(204, 204, 204, 1),
                   elevation: 4.0,
                   margin: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 4.0),
+                    horizontal: 8.0,
+                    vertical: 4.0,
+                  ),
                   child: ListTile(
                     // Task checkbox
                     leading: Checkbox(
