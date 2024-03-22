@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import "package:localstorage/localstorage.dart";
+import 'package:hive_flutter/adapters.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 // Task class
@@ -14,8 +14,7 @@ class Task {
 }
 
 class MyApp extends StatelessWidget {
-  final LocalStorage storage = LocalStorage('localstorage_app');
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +37,40 @@ class TodoScreen extends StatefulWidget {
 class _TodoScreenState extends State<TodoScreen> {
   List<Task> tasks = [];
   TextEditingController taskController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    initHive();
+  }
+
+  // Initialize Hive
+  void initHive() async {
+    await Hive.initFlutter();
+    await Hive.openBox('taskBox');
+    setState(() {
+      loadTasks();
+    });
+  }
+
   // Add task
   void addTask(String title) {
     if (title.isNotEmpty) {
       setState(() {
         tasks.add(Task(title: title));
+        saveTask(title, false);
       });
       taskController.clear();
       Navigator.of(context).pop();
+    }
+  }
+
+  // Load tasks from Hive box
+  void loadTasks() {
+    final taskBox = Hive.box('taskBox');
+    for (var i = 0; i < taskBox.length; i++) {
+      final task = taskBox.getAt(i);
+      tasks.add(Task(title: task[0], isCompleted: task[1]));
     }
   }
 
@@ -53,6 +78,8 @@ class _TodoScreenState extends State<TodoScreen> {
   void toggleTask(int index) {
     setState(() {
       tasks[index].isCompleted = !tasks[index].isCompleted;
+      Hive.box("taskBox")
+          .putAt(index, [tasks[index].title, tasks[index].isCompleted]);
     });
   }
 
@@ -60,7 +87,13 @@ class _TodoScreenState extends State<TodoScreen> {
   void deleteTask(int index) {
     setState(() {
       tasks.removeAt(index);
+      Hive.box("taskBox").deleteAt(index);
     });
+  }
+
+  // Save task to Hive box
+  void saveTask(String title, bool isCompleted) {
+    Hive.box('taskBox').add([title, isCompleted]);
   }
 
   void showAddTaskDialog(BuildContext context) {
